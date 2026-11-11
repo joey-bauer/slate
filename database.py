@@ -21,4 +21,18 @@ def initialize_database():
     finally:
         connection.close()
 
-initialize_database()
+def add_task(title, category):
+    """Add a task to the database."""
+    connection = sqlite3.connect(DATABASE_PATH)
+
+    try:
+        connection.execute(
+            """
+            INSERT INTO tasks (title, category)
+            VALUES (?, ?)
+            """,
+            (title, category)
+        )
+        connection.commit()
+    finally:
+        connection.close()
