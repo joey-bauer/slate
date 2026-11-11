@@ -36,3 +36,17 @@ def add_task(title, category):
         connection.commit()
     finally:
         connection.close()
+
+def get_tasks():
+    """Return all tasks, returning the newest first."""
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    try:
+        return connection.execute("""
+            SELECT id, title, category
+            FROM tasks
+            ORDER BY id DESC
+        """).fetchall()
+    finally:
+        connection.close()
