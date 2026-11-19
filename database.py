@@ -19,15 +19,6 @@ def initialize_database():
             )
         """)
 
-        rows = connection.execute("PRAGMA table_info(tasks)").fetchall()
-        column_names = []
-
-        for row in rows:
-            column_names.append(row[1])
-
-        if "status" not in column_names:
-            print("The status column in missing.")
-
     finally:
         connection.close()
 
