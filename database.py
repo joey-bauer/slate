@@ -45,9 +45,25 @@ def get_tasks():
 
     try:
         return connection.execute("""
-            SELECT id, title, category
+            SELECT id, title, category, status
             FROM tasks
             ORDER BY id DESC
         """).fetchall()
+    finally:
+        connection.close()
+
+def update_task(task_id, status):
+    """Update the status of a task from incomplete to complete or vice versa."""
+    connection = sqlite3.connect(DATABASE_PATH)
+
+    try:
+        connection.execute("""
+            UPDATE tasks
+            SET status = ?
+            WHERE id = ?
+            """,
+            (status, task_id)
+        )
+        connection.commit()
     finally:
         connection.close()

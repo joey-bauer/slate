@@ -4,7 +4,8 @@ import sqlite3
 from database import(
     initialize_database,
     add_task,
-    get_tasks
+    get_tasks,
+    update_task
 )
 
 st.set_page_config(page_title="slate", page_icon="🗒️", layout="wide")
@@ -38,4 +39,15 @@ else:
     else:
         for task in tasks:
            if selected_category == task["category"]:
-               st.write(f"{task["title"]}")
+                completed = False
+                if task["status"] == "complete":
+                    completed = True
+                else:
+                    completed = False
+                
+                status = st.checkbox(f"{task["title"]}", value=completed, key=task["id"])
+                
+                if status != completed and status == False:
+                    update_task(task["id"], "incomplete")
+                elif status != completed and status == True:
+                    update_task(task["id"], "complete")
