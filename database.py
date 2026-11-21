@@ -19,12 +19,27 @@ def initialize_database():
             )
         """)
 
+        rows = connection.execute("PRAGMA table_info(tasks)").fetchall()
+        column_names = []
+
+        for row in rows:
+            column_names.append(row[1])
+
+        if "due_date" not in column_names:
+            connection.execute("""
+                ALTER TABLE tasks ADD COLUMN due_date TEXT
+            """)
+
     finally:
         connection.close()
 
 def add_task(title, category):
     """Add a task to the database."""
     connection = sqlite3.connect(DATABASE_PATH)
+    title = title.strip()
+
+    if not title:
+        raise ValueError("Enter task name.")
 
     try:
         connection.execute(

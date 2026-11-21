@@ -23,11 +23,22 @@ if "tasks" not in st.session_state:
 
 selected_category = st.segmented_control("Slate", tabs)
 
-with st.form("Add Task"):
-    new_task = st.text_input("Enter new task")
-    add_new_task = st.form_submit_button("Add")
-    if add_new_task:
-        add_task(new_task, selected_category)
+with st.form("Add Task", key="add_task_form"):
+    new_task = st.text_input(
+        "Enter new task",
+        key="new_task_name"                 
+    ).strip()
+    submitted = st.form_submit_button("Add")
+
+    if submitted:
+        try:
+            add_task(new_task, selected_category)
+        except ValueError as error:
+            st.warning(str(error))
+        except sqlite3.Error:
+            st.error("Could not save task, please try again.")
+        else:
+            st.rerun()
 
 try:
     tasks = get_tasks()
